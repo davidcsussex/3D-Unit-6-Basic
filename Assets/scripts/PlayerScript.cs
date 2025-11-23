@@ -2,8 +2,14 @@ using UnityEngine;
 
 public class PlayerScript : MonoBehaviour
 {
+    //to reduce collider penetrating another, go to->
+    //project settings->physics settings-> default solver iterations > 25
+    //project settings->physics settings-> default solver velocity iterations > 25
+
+
     Rigidbody rb;
     public Camera cam;
+    Vector3 moveDir;
 
 
     // Start is called before the first frame update
@@ -41,10 +47,10 @@ public class PlayerScript : MonoBehaviour
         float targetAngle = 0;
         float currentAngle=0;
         float currentAngleVelocity=0;
-        float moveSpeed = 20;
+        float moveSpeed = 50;
         float rotationSmoothTime = 0;
 
-        Vector3 moveDir = Vector3.zero;
+        moveDir = Vector3.zero;
 
 
         //get direction from horiz/vertical input
@@ -61,12 +67,23 @@ public class PlayerScript : MonoBehaviour
             transform.rotation = Quaternion.Euler(0, currentAngle, 0);
         }
 
-        rb.linearVelocity = new Vector3(moveDir.x, rb.linearVelocity.y, moveDir.z);
+        //***Movement method 1***
+        //rb.linearVelocity = new Vector3(moveDir.x, rb.linearVelocity.y, moveDir.z);
+        //***Movement method 1***
+    }
+
+    private void FixedUpdate()
+    {
+        //***Movement method 2***
+        Vector3 force = new Vector3(moveDir.x, -15, moveDir.z); //add small downforce to prevent skipping down slopes
+        rb.AddForce(force * 2, ForceMode.Impulse);
+        //***Movement method 2***
+
     }
 
     void DoFriction()
     {
-        rb.linearVelocity = new Vector3(rb.linearVelocity.x * 0.3f, rb.linearVelocity.y, rb.linearVelocity.z * 0.3f);
+        //rb.linearVelocity = new Vector3(rb.linearVelocity.x * 0.3f, rb.linearVelocity.y, rb.linearVelocity.z * 0.3f);
     }
 
 
