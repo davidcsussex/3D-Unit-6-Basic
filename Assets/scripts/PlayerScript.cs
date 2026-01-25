@@ -10,6 +10,7 @@ public class PlayerScript : MonoBehaviour
     Rigidbody rb;
     public Camera cam;
     Vector3 moveDir;
+    float h, v;
 
 
     // Start is called before the first frame update
@@ -33,6 +34,7 @@ public class PlayerScript : MonoBehaviour
 
         //add your debug text here
         text += "Player xyz=" + transform.position.x + "  " + transform.position.y + "  " + transform.position.z;
+        text += "hv=" + h + "  " + v;
 
         //draw text to screen
         GUILayout.BeginArea(new Rect(10f, 10f, 1600f, 1600f));
@@ -54,9 +56,11 @@ public class PlayerScript : MonoBehaviour
 
 
         //get direction from horiz/vertical input
-        float h = Input.GetAxisRaw("Horizontal");
-        float v = Input.GetAxisRaw("Vertical");
+        h = Input.GetAxisRaw("Horizontal");
+        v = Input.GetAxisRaw("Vertical");
         Vector3 direction = new Vector3(h, 0, v).normalized;
+
+
 
         //move and rotate player relative to camera angle
         if (direction.magnitude >= 0.1f)
@@ -68,7 +72,7 @@ public class PlayerScript : MonoBehaviour
         }
 
         //***Movement method 1***
-        //rb.linearVelocity = new Vector3(moveDir.x, rb.linearVelocity.y, moveDir.z);
+        rb.linearVelocity = new Vector3(moveDir.x, rb.linearVelocity.y, moveDir.z);
         //***Movement method 1***
     }
 
@@ -76,14 +80,14 @@ public class PlayerScript : MonoBehaviour
     {
         //***Movement method 2***
         Vector3 force = new Vector3(moveDir.x, -15, moveDir.z); //add small downforce to prevent skipping down slopes
-        rb.AddForce(force * 2, ForceMode.Impulse);
+        //rb.AddForce(force * 2, ForceMode.Impulse);
         //***Movement method 2***
 
     }
 
     void DoFriction()
     {
-        //rb.linearVelocity = new Vector3(rb.linearVelocity.x * 0.3f, rb.linearVelocity.y, rb.linearVelocity.z * 0.3f);
+        rb.linearVelocity = new Vector3(rb.linearVelocity.x * 0.3f, rb.linearVelocity.y, rb.linearVelocity.z * 0.3f);
     }
 
 
