@@ -1,4 +1,7 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
+using System.Collections.Generic;
+using System.Collections;
 
 public class PlayerScript : MonoBehaviour
 {
@@ -11,17 +14,43 @@ public class PlayerScript : MonoBehaviour
     public Camera cam;
     Vector3 moveDir;
     float h, v;
+    float currentAngleVelocity = 0;
+    float currentAngle = 0;
+    float rotationSmoothTime = 0.2f;
+    float targetAngle = 0;
+    float moveSpeed = 50;
+
+
+    //define the actions
+    InputAction moveAction;
+    InputAction lookAction;
+    InputAction jumpAction;
 
 
     // Start is called before the first frame update
     void Start()
     {
+        //intialise the actions
+        moveAction = InputSystem.actions.FindAction("Move");
+        lookAction = InputSystem.actions.FindAction("Look");
+        jumpAction = InputSystem.actions.FindAction("Jump");
+
         rb = GetComponent<Rigidbody>();
     }
 
     // Update is called once per frame
     public void Update()
     {
+
+        //test to read the actions
+        print("move=" + moveAction.ReadValue<Vector2>());
+        print("look=" + lookAction.ReadValue<Vector2>());
+        
+        if( jumpAction.triggered )
+        { 
+            print("jumped=");
+        }
+
         DoRun();        //do movement
         DoFriction();   //apply friction to stop player sliding
     }
@@ -46,18 +75,17 @@ public class PlayerScript : MonoBehaviour
 
     public void DoRun()
     {
-        float targetAngle = 0;
-        float currentAngle=0;
-        float currentAngleVelocity=0;
-        float moveSpeed = 50;
-        float rotationSmoothTime = 0;
 
         moveDir = Vector3.zero;
 
 
         //get direction from horiz/vertical input
-        h = Input.GetAxisRaw("Horizontal");
-        v = Input.GetAxisRaw("Vertical");
+        //h = Input.GetAxisRaw("Horizontal");
+        //v = Input.GetAxisRaw("Vertical");
+
+        h = moveAction.ReadValue<Vector2>().x;
+        v = moveAction.ReadValue<Vector2>().y;
+
         Vector3 direction = new Vector3(h, 0, v).normalized;
 
 
@@ -87,7 +115,7 @@ public class PlayerScript : MonoBehaviour
 
     void DoFriction()
     {
-        rb.linearVelocity = new Vector3(rb.linearVelocity.x * 0.3f, rb.linearVelocity.y, rb.linearVelocity.z * 0.3f);
+        //rb.linearVelocity = new Vector3(rb.linearVelocity.x * 0.3f, rb.linearVelocity.y, rb.linearVelocity.z * 0.3f);
     }
 
 
